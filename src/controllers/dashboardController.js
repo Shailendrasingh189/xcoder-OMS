@@ -5,13 +5,13 @@ import ExpressErrorHandler from "../middleware/ExpressErrorHandler.js";
 
 const getDashboardStats = async (req, res, next) => {
   try {
-    const startOfToday = new Date();
-    startOfToday.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     const totalEnquiries = await Enquiry.countDocuments();
 
     const todayEnquiries = await Enquiry.countDocuments({
-      createdAt: { $gte: startOfToday },
+      createdAt: { $gte: today },
     });
 
     const totalTrainers = await Trainer.countDocuments();
@@ -19,7 +19,7 @@ const getDashboardStats = async (req, res, next) => {
     const totalAdmissions = await Admission.countDocuments();
 
     const todayAdmissions = await Admission.countDocuments({
-      createdAt: { $gte: startOfToday },
+      createdAt: { $gte: today },
     });
 
     const demoSessions = await Enquiry.countDocuments({ status: "Demo" });
