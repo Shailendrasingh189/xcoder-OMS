@@ -12,9 +12,10 @@ const createTrainer = async (req, res, next) => {
 
     const existingTrainer = await Trainer.findOne({ email });
     if (existingTrainer) {
-      return next(
-        new ExpressErrorHandler(400, `This trainer is already registered.`)
-      );
+      return res.status(400).json({
+        success: true,
+        message: "This trainer already exists.",
+      });
     }
 
     // Get the next sequence for trainerId
@@ -52,7 +53,13 @@ const getAllTrainers = async (req, res, next) => {
       trainers,
     });
   } catch (error) {
-    next(new ExpressErrorHandler(500, "Error fetching trainers.", error));
+    next(
+      new ExpressErrorHandler(
+        500,
+        "Error Occurs on fetching trainers data.",
+        error
+      )
+    );
   }
 };
 
@@ -62,9 +69,10 @@ const getTrainerById = async (req, res, next) => {
     const trainer = await Trainer.findById(trainerId);
     console.log(trainer, trainerId);
     if (!trainer) {
-      return next(
-        new ExpressErrorHandler(404, `Trainer with ID ${trainerId} not found.`)
-      );
+      return res.status(400).json({
+        success: true,
+        message: "Trainer ID not found.",
+      });
     }
 
     res.status(200).json({
@@ -86,9 +94,10 @@ const updateTrainer = async (req, res, next) => {
     });
 
     if (!trainer) {
-      return next(
-        new ExpressErrorHandler(404, `Trainer with ID ${trainerId} not found.`)
-      );
+      return  res.status(400).json({
+        success: true,
+        message: "Trainer ID not found.",
+      });
     }
 
     res.status(200).json({
@@ -107,9 +116,10 @@ const deleteTrainer = async (req, res, next) => {
   try {
     const trainer = await Trainer.findOneAndDelete(trainerId);
     if (!trainer) {
-      return next(
-        new ExpressErrorHandler(404, `Trainer with ID ${trainerId} not found.`)
-      );
+      return  res.status(400).json({
+        success: true,
+        message: "Trainer ID not found.",
+      });
     }
 
     res.status(200).json({

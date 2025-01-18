@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const AdmissionSchema = new Schema({
+const DemoSchema = new Schema({
   demoId: {
     type: String,
     unique: true,
@@ -19,3 +19,7 @@ const AdmissionSchema = new Schema({
     match: /^[0-9]+$/,
   },
 });
+
+const Demo = model("demo", DemoSchema);
+
+export default Demo;

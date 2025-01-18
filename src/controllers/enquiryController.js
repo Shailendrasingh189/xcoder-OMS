@@ -8,18 +8,16 @@ const createEnquiry = async (req, res, next) => {
 
     // Validations
     if (!name || !email || !phone || !message || !courseInterest) {
-      return next(
-        new ExpressErrorHandler(
-          400,
-          "Name, Email, Phone, Message, and Course Interest are required."
-        )
-      );
+      return;
     }
 
     // Check for duplicate enquiries
     const existingEnquiry = await Enquiry.findOne({ email });
     if (existingEnquiry) {
-      return next(new ExpressErrorHandler(400, "This enquiry already exists."));
+      return res.status(400).json({
+        success: true,
+        message: "This enquiry already exists.",
+      });
     }
 
     // Generate enquiryId
@@ -27,7 +25,6 @@ const createEnquiry = async (req, res, next) => {
     console.log(counter);
     const enquiryId = `XCE${String(counter + 1).padStart(3, "0")}`;
 
-    console.log(enquiryId);
 
     const enquiry = await Enquiry.create({
       enquiryId,
@@ -70,9 +67,11 @@ const getEnquiryById = async (req, res, next) => {
     const enquiry = await Enquiry.findById(enquiryId);
     console.log(enquiry);
     if (!enquiry) {
-      return next(
-        new ExpressErrorHandler(404, `Enquiry with ID ${enquiryId} not found.`)
-      );
+      return res.status(404).json({
+        success: true,
+        message: "Enquiry ID not found..",
+        enquiry,
+      });
     }
 
     res.status(200).json({
@@ -95,9 +94,11 @@ const updateEnquiry = async (req, res, next) => {
     });
 
     if (!enquiry) {
-      return next(
-        new ExpressErrorHandler(404, `Enquiry with ID ${enquiryId} not found.`)
-      );
+      return res.status(404).json({
+        success: true,
+        message: "Enquiry ID not found..",
+        enquiry,
+      });
     }
 
     res.status(200).json({
@@ -117,12 +118,13 @@ const deleteEnquiry = async (req, res, next) => {
   try {
     const enquiry = await Enquiry.findByIdAndDelete(enquiryId);
     if (!enquiry) {
-      return next(
-        new ExpressErrorHandler(404, `Enquiry with ID ${enquiryId} not found.`)
-      );
+      return res.status(404).json({
+        success: false,
+        message: "Enquiry ID not Found",
+      });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Enquiry deleted successfully.",
       enquiry,

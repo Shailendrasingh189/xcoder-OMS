@@ -1,6 +1,7 @@
 import { Enquiry } from "../models/enquiryModel.js";
 import { Trainer } from "../models/trainerModel.js";
 import { Admission } from "../models/admissionModel.js";
+
 import ExpressErrorHandler from "../middleware/ExpressErrorHandler.js";
 
 const getDashboardStats = async (req, res, next) => {
@@ -37,7 +38,11 @@ const getDashboardStats = async (req, res, next) => {
     });
   } catch (error) {
     next(
-      new ExpressErrorHandler(500, "Error fetching dashboard statistics.", error)
+      new ExpressErrorHandler(
+        500,
+        "Error fetching dashboard statistics.",
+        error
+      )
     );
   }
 };
